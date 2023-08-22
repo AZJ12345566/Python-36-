@@ -89,7 +89,58 @@ def menum():
         stu_txt.close()
             
     def search():
-        pass
+        student_query=[]
+        while True:
+            id=''
+            name=''
+            if os.path.exists(filename):
+                mode=input('按ID查找请输入1，按姓名查找请输入2:')
+                if mode=='1':
+                        id=input('请输入学生ID')
+                elif mode=='2':
+                        name=input('请输入学生姓名:')
+                else:
+                        print('您的输入有误，请重新输入')
+                        search()
+                with open(filename,'r',encoding=''utf-8) as rfile:
+                        student=rfile.readlines()
+                        for item in student:
+                                d=dict(eval(item))
+                                if id!='':
+                                        if d['id']==id:
+                                            student_query.append(d)
+                                elif name!='':
+                                        if d['name']==name:
+                                            student_query.append(d)
+                #显示查询结果
+                show student(student_query)
+                #清空列表
+                studenrt_query.clear()
+                anser=input('是否继续查询?y/n\n')
+                if answer=='y':
+                        continue
+                else:
+                        break
+            else:
+                print('暂为保存学生信息')
+                return
+        def show_student(lst):
+                if len(lst)==0:
+                    print('没有查询到学生信息，无数据显示')
+                    return
+                #定义标题的显示格式
+                format_title='{:^6}\t{:^12}\t{:^8}\t{:^10}\t{:^10}\t{:^8}'
+                print(format_title.format('ID','姓名','英语成绩','Python成绩','Java成绩','总成绩'))
+                #定义内容显示格式
+                for_data='{:^6}\t{:^12}\t{:^8}\t{:^8}\t{:^8}\t{:^8}'
+                for item in lst:
+                        print(format_data.format(item.get('id'),
+                                                item.get('name'),
+                                                item.get('english'),
+                                                item.get('Python'),
+                                                item.get('java'),
+                                                int(item.get('english'))+int(item.get('python'))+int(item.get('java'))
+                                                ))
     def delete():
         while True:
             student_id=input('请输入要删除的学生ID:')
@@ -123,13 +174,88 @@ def menum():
                 else:
                     break
     def modify():
-        pass
+        show()
+        if os.path.exists(filename):
+                with open(filename,'r',encoding='utf-8') as rfile:
+                        student_old=rfile.readlines()
+        else:
+                return
+        student_id=input('请输入要修改的学员的ID:')
+        with open(filename,'w',encoding='utf-8') as wfile:
+                for item in student_old:
+                        d=dict(eval(item))
+                        if d['id']==student_id:
+                                print('找到学生信息，可以修改他的相关信息')
+                                while True:
+                                    try:
+                                        d['name']=input('请输入姓名')
+                                        d['english']=input('请输入英语成绩')
+                                        d['python']=input('请输入python成绩')
+                                        d['java']=input('请输入java成绩')
+                                    except:
+                                            print('您的输入有误，请重新输入')
+                                    else:
+                                        break
+                                wfile.write(str(d)+'\n')
+                                print('修改成功')
+                        else:
+                                wfile.write(str(d)+'\n')
+                answer=input('是否要继续修改其他同学信息？y/n\n')
+                if answer=='y':
+                        modify()
     def sort():
-        pass
+        show()
+        if os.path.exists(filename):
+            with open(filename,'r',encoding='utf-8') as rfile:
+                student_lst=rfile.readlines()
+            student_new=[]
+            for item in student_lst:
+                d=dict(eval(item))
+                student_new,append(d)
+        else:
+            return
+        asc_or_desc=input('请选择(0.升序 1.降序):')
+        if asc_or_desc=='0':
+            asc_or_desc_bool=False
+        elif asc_or_desc=='1':
+            asc_or_desc_bool=True
+        else:
+            print('您的输入有误，请重新输入')
+            sort()
+        mode=input('请选择排序方式(1.按英语成绩排序 2.按Python成绩排序 3.按Java成绩排序 0.按总成绩排序):')
+        if mode=='1':
+            stuent_new.sort(key=lambda x:int(x['english']),reverse=asc_or_desc_bool)
+        elif mode=='2':
+             stuent_new.sort(key=lambda x:int(x['python']),reverse=asc_or_desc_bool)
+        elif mode=='3':
+             stuent_new.sort(key=lambda x:int(x['java']),reverse=asc_or_desc_bool)
+        elif mode=='0':
+              stuent_new.sort(key=lambda x:int(x['english'])+int(x['python'])+int(x['java']),reverse=asc_or_desc_bool)
+        else:
+            print('您的输入有误，请重新输入')
+            sort()
+        show_student(student_new)
     def total():
-        pass
+        if os.path.exists(filename):
+            with open(filename,'r',encoding='utf-8') as rfile:
+                student=rfile.readlines()
+                if students:
+                    print(f'一共有{len(students)名学生}')
+                else:
+                    print('还没有录入学生信息....')
+        else:
+            print('暂未保存数据信息....')
     def show():
-        pass
+        student_lst=[]
+        if os.path.exists(filename):
+            with open(filename,'r',encoding='utf-8') as rfile:
+                student=rfile.readlines()
+                for item in students:
+                    student_lst.append(eval(item))
+                if student_lst:
+                    show_student(student_lst)
+        else:
+            print('暂未保存过数据')
 
 if __name__=='__main__':
       main()
@@ -138,3 +264,12 @@ if __name__=='__main__':
 
 # p138 学生信息管理系统-录入学生信息功能
 # p139 学生信息管理系统-删除学生信息功能
+
+# p140 学生信息管理系统-修改学生信息功能
+# p141 学生信息管理系统-查找学生信息功能
+# p142 学生信息管理系统-统计学生总人数
+# p143 学生信息管理系统-显示所有学生信息功能
+# p144 学生信息管理系统-排序模块设计
+# p145 学生信息管理系统-项目打包生成exe可执行文件
+#在线安装方式:pip install Pyinstaller
+#安装完成之后输入pyinstaller -F (在此处输入文件路径和文件名)
